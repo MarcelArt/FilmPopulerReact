@@ -3,6 +3,7 @@ import { FlatList, ActivityIndicator, Text, View, StyleSheet, TouchableOpacity, 
 import { withNavigation } from 'react-navigation';
 
 class ListFilm extends React.Component {
+  
 
   constructor(props){
     super(props);
@@ -10,13 +11,19 @@ class ListFilm extends React.Component {
   }
 
   componentDidMount(){
-    return fetch('https://api.themoviedb.org/3/movie/top_rated?api_key=54fb0736054c2be79f6f930f4cae9a70&page=1')
+    const { navigation } = this.props;
+    return fetch('https://api.themoviedb.org/3/movie/top_rated?page=' + JSON.stringify(navigation.getParam('page', 'NO-ID')), {
+      method:'get',
+      headers: new Headers({
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1NGZiMDczNjA1NGMyYmU3OWY2ZjkzMGY0Y2FlOWE3MCIsInN1YiI6IjVlMWU3MjUyNWMwNzFiMDAxMTYyZWQ1NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.2wlUuKXOyzctGs0M0Rs2k_sBc5d8KAFJH9jipV3jHbE'
+      })
+    })
       .then((response) => response.json())
       .then((responseJson) => {
 
         this.setState({
           isLoading: false,
-          dataSource: responseJson.results,
+          dataSource: responseJson,
         }, function(){
 
         });
@@ -46,7 +53,7 @@ class ListFilm extends React.Component {
       <View style={{flex: 1, padding: 15, marginTop: 0, backgroundColor: '#313131'}}>
         <Text style={{ textAlign: 'center', fontSize: 48, marginBottom: 5, color: 'white' }}>Popular Film</Text>
         <FlatList
-          data={this.state.dataSource}
+          data={this.state.dataSource.results}
           renderItem={
               ({item}) => 
                 <TouchableOpacity style = {styles.listFilm} onPress={() => this.props.navigation.navigate('Detail', { itemId: item.id })}>
@@ -61,9 +68,10 @@ class ListFilm extends React.Component {
             }
           keyExtractor={({id}, index) => id}
         />
-        {/* <View style={{ flexDirection: 'row'}}>
-            <Button title="Previous"/>
-            <Button title="Next"/>
+        {/* <View style={{ flexDirection: 'row', justifyContent: 'space-around'}}>
+            <Button style={{ width: 100 }} title="Previous"/>
+            <Text style={styles.textRating}>{this.state.dataSource.page}</Text>
+            <Button style={{ width: 100 }} title="Next" onPress={() => this.props.navigation.navigate('Home', { page: this.state.dataSource.page+1 })} />
         </View> */}
       </View>
     );

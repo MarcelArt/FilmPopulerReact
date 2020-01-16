@@ -10,7 +10,14 @@ export default class DetailFilm extends React.Component {
     componentDidMount(){
         const { navigation } = this.props;
         console.log('id' + this.props.itemId);
-        return fetch('https://api.themoviedb.org/3/movie/'+ JSON.stringify(navigation.getParam('itemId', 'NO-ID')) +'?api_key=54fb0736054c2be79f6f930f4cae9a70')
+        return fetch(
+            'https://api.themoviedb.org/3/movie/'+ JSON.stringify(navigation.getParam('itemId', 'NO-ID')),
+            {
+                method: 'get',
+                headers: new Headers({
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1NGZiMDczNjA1NGMyYmU3OWY2ZjkzMGY0Y2FlOWE3MCIsInN1YiI6IjVlMWU3MjUyNWMwNzFiMDAxMTYyZWQ1NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.2wlUuKXOyzctGs0M0Rs2k_sBc5d8KAFJH9jipV3jHbE'
+                })
+            })//fetch
             .then((response) => response.json())
             .then((responseJson) => {
 
